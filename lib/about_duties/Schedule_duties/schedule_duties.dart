@@ -11,7 +11,7 @@ class schedule_duties extends StatefulWidget {
   State<schedule_duties> createState() => _schedule_dutiesState();
 }
 
-class _schedule_dutiesState extends State<schedule_duties> {
+class _schedule_dutiesState extends State<schedule_duties>  {
   _schedule_dutiesState() {
     _selectedValUser = _userNameList[0];
     _selectedValArea = _areaNameList[0];
@@ -54,6 +54,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
       body: SafeArea(
           child: Column(
         children: [
+
           //User Dropdown
           Padding(
             padding:
@@ -93,6 +94,8 @@ class _schedule_dutiesState extends State<schedule_duties> {
               ),
             ),
           ),
+
+
           //Area Dropdown
           Padding(
             padding:
@@ -132,6 +135,8 @@ class _schedule_dutiesState extends State<schedule_duties> {
               ),
             ),
           ),
+
+
           //Route Dropdown
           Padding(
             padding:
@@ -171,9 +176,11 @@ class _schedule_dutiesState extends State<schedule_duties> {
               ),
             ),
           ),
+
+
           //Date picker
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
             child: TextFormField(
               controller: _date,
               decoration: InputDecoration(
@@ -186,7 +193,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
                   "Select Date",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 25,
+                      fontSize: 18,
                       color: kSecondaryColor),
                 ),
               ),
@@ -206,6 +213,8 @@ class _schedule_dutiesState extends State<schedule_duties> {
             ),
           ),
           SizedBox(height: 30,),
+
+
           //Submit button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
