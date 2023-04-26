@@ -1,9 +1,13 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pro/screens/homepage.dart';
+import 'package:pro/screens/user_panel/U_homepage.dart';
 import 'package:pro/widgets/onBoarding_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +32,7 @@ void main() {
         errorBorder: defaultInputBorder,
       ),
     ),
-    home: const SplashScreen(),
+    home:  const SplashScreen(),
   ));
 }
 
@@ -47,16 +51,47 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+
+  @override
+  void initState() {
+    super.initState();
+    startTime();
+  }
+
+  startTime() async {
+    var _duration = new Duration(seconds: 3);
+    return new Timer(_duration, checkFirstSeen);
+  }
+
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('id') != null) {
+      if (prefs.getString('Role') != null && prefs.getString('Role') == "1") {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()), (
+            Route<dynamic> route) => false);
+      } else {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+            builder: (BuildContext context) => U_homepage()), (
+            Route<dynamic> route) => false);
+      }
+    } else {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+          builder: (BuildContext context) => OnboardingScreen()), (
+          Route<dynamic> route) => false);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedSplashScreen(
-      splash: Lottie.asset('assets/images/location_1.json'),
-      backgroundColor: Colors.blue.shade50,
-      splashIconSize: 450,
-      // splashTransition: SplashTransition.fadeTransition,
-      animationDuration: const Duration(microseconds: 2500),
-      nextScreen: const OnboardingScreen(),
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 225, 239, 252),
+      body: Center(
+        child: Lottie.asset('assets/images/location_1.json',
+        ),
+      ),
     );
   }
 }

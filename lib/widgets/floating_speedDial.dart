@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:pro/User/history.dart';
-import 'package:pro/map.dart';
+import 'package:pro/screens/map_admin.dart';
 
-import '../User/add_users.dart';
+import '../admin_panel_user/add_users.dart';
+import '../admin_panel_user/history.dart';
+
 class floating_speedDial extends StatelessWidget {
   const floating_speedDial({
     Key? key,
@@ -36,9 +37,9 @@ class floating_speedDial extends StatelessWidget {
             child: const Icon(Icons.location_on_outlined),
             label: 'Map',
             onTap: () {
-              getLiveLocation();
-              launchURL();
+              const map_admin();
               // getLiveLocation();
+              // launchURL();
             },
           ),
           SpeedDialChild(
@@ -47,7 +48,7 @@ class floating_speedDial extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
-                return const history(title: "History");
+                return  history();
               }),
             ),
           ),

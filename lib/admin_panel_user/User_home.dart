@@ -1,8 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:pro/User/history.dart';
-import 'package:pro/User/manage_user.dart';
-import 'package:pro/User/add_users.dart';
+
+
+import 'add_users.dart';
+import 'history.dart';
+import 'manage_user.dart';
 
 class Users extends StatefulWidget {
   @override
@@ -57,7 +59,7 @@ Widget getSelectedWidget({required int index}){
       widget = manage_users();
       break;
     default:
-      widget = history(title: 'History',);
+      widget = history();
       break;
   }
   return widget;

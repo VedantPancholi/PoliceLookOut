@@ -1,11 +1,16 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pro/User/history.dart';
-import 'package:pro/User/manage_user.dart';
 import 'package:pro/about_duties/home/new_schedule_assign_basepage.dart';
-import 'package:pro/map.dart';
-import '/User/user_data.dart';
+import 'package:flutter/src/painting/gradient.dart' as prefix;
+import 'package:pro/screens/map_admin.dart';
+import 'package:rive/rive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../admin_panel_user/history.dart';
+import '../admin_panel_user/manage_user.dart';
+import '../others/user_data.dart';
 import '../widgets/pelatte.dart';
 
 class first_screen extends StatefulWidget {
@@ -17,17 +22,49 @@ class first_screen extends StatefulWidget {
 
 class _first_screenState extends State<first_screen> {
 
+
+
+  String userName = "";
+
+  newFieldName() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      userName = sharedPreferences.getString('name')!;
+    });
+  }
+
+  @override
+  void initState() {
+    newFieldName();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
+          const RiveAnimation.asset("assets/RiveAssets/shapes.riv"),
+          // Positioned.fill(
+          //     child: BackdropFilter(
+          //       filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+          //       child: const SizedBox(),
+          //     )),
           Container(
-            height: size.height*.45,
+            height: size.height*.35,
             decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.only(
+              gradient: prefix.LinearGradient(
+                colors: [
+                  Colors.cyan.shade700.withOpacity(0.4),
+                  Colors.cyan.shade500.withOpacity(0.4),
+                  Colors.cyan.shade200.withOpacity(0.4),
+                ],
+                begin: AlignmentDirectional.topCenter,
+                end: Alignment.bottomCenter,
+
+              ),
+
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(70),
                 bottomRight: Radius.circular(70),
               )
@@ -52,7 +89,6 @@ class _first_screenState extends State<first_screen> {
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(child: Image.asset("assets/images/PL.png")),
-
                     ),
                   ),
                   Text(
@@ -71,13 +107,14 @@ class _first_screenState extends State<first_screen> {
                         fontWeight: FontWeight.w400),
                   ),
                   Text(
-                    personal_info1.f_Name ?? "" ,
+                    userName,
                     style: GoogleFonts.robotoMono(
                         fontSize: 35,
                         color: Colors.black,
                         fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 110,),
+
                   Expanded(
                     child: GridView.count(
                       crossAxisSpacing: 20,
@@ -96,8 +133,10 @@ class _first_screenState extends State<first_screen> {
                           ),
                           child: InkWell(
                             onTap: (){
-                              getLiveLocation();
-                              launchURL();
+
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> map_admin(),));
+                              // getLiveLocation();
+                              // launchURL();
                             },
                             child: Stack(
                               children: [
@@ -123,13 +162,13 @@ class _first_screenState extends State<first_screen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2)
+                              boxShadow: const [
+                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
                               ]
                             ),
                             child: InkWell(
                               onTap: (){
-                                Navigator.push(context, PageTransition(child: history(title: 'History',), type: PageTransitionType.leftToRight));
+                                Navigator.push(context, PageTransition(child: history(), type: PageTransitionType.leftToRight));
                               },
                               child: Stack(
                                 children: [
@@ -156,8 +195,8 @@ class _first_screenState extends State<first_screen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2)
+                              boxShadow: const [
+                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
                               ]
                             ),
                             child: InkWell(
@@ -230,6 +269,16 @@ class _first_screenState extends State<first_screen> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
 //
 // class Body extends StatelessWidget {
 //   const Body({Key? key}) : super(key: key);

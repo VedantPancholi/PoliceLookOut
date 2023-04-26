@@ -9,3 +9,4 @@ const String tSplashIconLocation = 'assets/images/location.png';
 
 Color kPrimaryColor = Colors.cyan.shade400;
 Color kSecondaryColor = Colors.cyan.shade800;
+Color splashColor = Color.fromARGB(255, 225, 239, 252);

@@ -1,13 +1,20 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pro/homepage.dart';
+import 'package:pro/screens/homepage.dart';
 import 'package:rive/rive.dart';
 import 'package:http/http.dart' as http;
 // import '../screens/homeScreen.dart';
-import 'package:pro/User/user_data.dart';
+import 'package:pro/others/user_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
+import '../screens/user_panel/U_bottomNavigation_home.dart';
+import '../screens/user_panel/U_homepage.dart';
+import 'ForgotpasswordPage.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,16 +31,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           const RiveAnimation.asset("assets/RiveAssets/shapes.riv"),
           Positioned.fill(
               child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-            child: const SizedBox(),
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: const SizedBox(),
           )),
           SafeArea(
             child: Column(
@@ -44,6 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   child: SizedBox(
                       width: 270,
+                      // width: size.width*0.2,
                       child: Text(
                         "Let's Route!",
                         style: TextStyle(
@@ -57,7 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   height: 15,
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: SizedBox(
                     height: 76,
                     width: 340,
@@ -86,22 +97,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     borderRadius: BorderRadius.circular(16)),
                                 child: TextFormField(
                                   validator: (val) {
-                                    if (val!.isEmpty) {
-                                      return "E-mail must not be empty";
+                                    if (val!.isEmpty ||
+                                        RegExp(r"\s").hasMatch(val)) {
+                                      return "Email must not be empty";
                                     } else {
-                                      if (val.contains('@')) {
+                                      if (RegExp(
+                                              r"^[a-zA-Z0-9]+[^#$%&*]+[a-zA-Z0-9]+@[a-z]+\.[a-z]{2,3}")
+                                          .hasMatch(val)) {
                                         return null;
                                       } else {
-                                        return "E-mail incorrect";
+                                        return "Enter a valid Email";
                                       }
                                     }
                                   },
                                   controller: nameController,
                                   decoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.symmetric(vertical: 15),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 15),
                                     border: InputBorder.none,
-                                    hintText: 'Email or Number',
+                                    hintText: 'Example123@gmail.com',
                                     hintStyle: GoogleFonts.cantarell(
                                         fontSize: 20,
                                         color: Colors.black54,
@@ -136,17 +150,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.grey[600]?.withOpacity(0.5),
+                                    // color: Colors.grey[600]?.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(16)),
                                 child: TextFormField(
-                                  validator: (val) =>
-                                  val!.isEmpty ? "password must not be empty" : null,
+                                  validator: (val) {
+                                    if (val!.isEmpty ||
+                                        RegExp(r"\s").hasMatch(val)) {
+                                      return "Use Proper Password ";
+                                    }
+                                  },
                                   controller: passwordController,
                                   decoration: InputDecoration(
-                                    contentPadding:
-                                        const EdgeInsets.symmetric(vertical: 15),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 15),
                                     border: InputBorder.none,
-                                    hintText: 'Password',
+                                    hintText: 'Password123',
                                     hintStyle: GoogleFonts.cantarell(
                                         fontSize: 20,
                                         color: Colors.black54,
@@ -173,17 +191,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              const Text(
-                                'Forgot Password?',
-                                style: TextStyle(
-                                    color: Colors.black87, fontSize: 18.0),
+
+                              //forgot button
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return forgot_password();
+                                        }),
+                                      );
+                                    },
+                                    autofocus: false,
+                                    child: Text(
+                                      "Forgot Password?",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
                               ),
+
                               const SizedBox(
                                 height: 70,
                               ),
                               Text(
                                 validator1 == true
-                                    ? "EMAIL OR PASSWORD CAN\'T BE NULL!"
+                                    ? "EMAIL or PASSWORD CAN\'T BE NULL!"
                                     : "",
                                 style: TextStyle(color: Colors.red),
                               ),
@@ -243,18 +282,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         });
                                         if (response.statusCode == 200) {
                                           logindata = jsonDecode(response.body);
-                                          data = jsonDecode(response.body)['user'];
+                                          data =
+                                              jsonDecode(response.body)['user'];
                                           print(data);
                                           // final personal_obj = personal_info.fromJson(data);
                                           // print(personal_obj.f_Name);
                                           personal_info1.getJson(data);
                                           if (logindata['error'] == false) {
-                                            Navigator.push(
-                                              context, MaterialPageRoute(
-                                                builder: (context) {
-                                                return HomePage();
-                                              }),
-                                            ); //pass personobj to basepage
+                                            SharedPreferences setpreference = await SharedPreferences.getInstance();
+                                            setpreference.setString('id', personal_info1.login_Id!);
+                                            setpreference.setString('Role', personal_info1.role!);
+                                            setpreference.setString('name', "${personal_info1.f_Name!} ${personal_info1.l_Name!}");
+                                            setpreference.setString('contactUs', personal_info1.contact_No!);
+                                            setpreference.setString('cardValue', personal_info1.card_Value!);
+                                            setpreference.setString('dob', personal_info1.dOB!);
+                                            setpreference.setString('email', personal_info1.email_Id!);
+
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            if(prefs.getString('id') != null) {
+                                              if(prefs.getString('Role') != null && prefs.getString('Role') == "1"){
+                                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomePage()), (Route<dynamic> route) => false);
+                                              }else{
+                                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => U_homepage()), (Route<dynamic> route) => false);
+                                              }
+                                            }else{
+                                              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                                  builder: (BuildContext context) => OnboardingScreen()), (
+                                                  Route<dynamic> route) => false);
+                                            }
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) {
+                                            //     return ();
+                                            //   }),
+                                            // ); //pass personobj to basepage
                                           }
                                         } else {
                                           nameController.clear();
