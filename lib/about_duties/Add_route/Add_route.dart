@@ -1,10 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:pro/widgets/pelatte.dart';
-import 'package:http/http.dart' as http;
-
-import '../../screens/homepage.dart';
 
 class add_route extends StatefulWidget {
   const add_route({Key? key}) : super(key: key);
@@ -15,11 +15,16 @@ class add_route extends StatefulWidget {
 
 class _add_routeState extends State<add_route> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  TextEditingController _routeName = TextEditingController();
+  final GlobalKey<FormState> _formkey2 = GlobalKey<FormState>();
+  // TextEditingController _routeName = TextEditingController();
   TextEditingController _areaName = TextEditingController();
+  TextEditingController _starting_loaction_name = TextEditingController();
+  TextEditingController _ending_loaction_name = TextEditingController();
   int _textfieldnumber = 1 ;
   List<TextEditingController> _formfields = [];
-  int nos = 0;
+  List<Map<dynamic, dynamic>> nodes = [];
+  var jsonResponse;
+
 
   //final List<TextEditingController> _stop_route_name  = [];
   //
@@ -41,12 +46,12 @@ class _add_routeState extends State<add_route> {
     super.initState();
    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) { _addField();});
   }
-  final _routeNameList = [
-    "SG Highway",
-    "Science City Road",
-    "Satellite",
-    "Panjrapol"
-  ];
+  // final _routeNameList = [
+  //   "SG Highway",
+  //   "Science City Road",
+  //   "Satellite",
+  //   "Panjrapol"
+  // ];
   // String? _selectedValRoute = "";
   // double _currentValueSlider = 0;
 
@@ -54,13 +59,10 @@ class _add_routeState extends State<add_route> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-
-
-
         appBar: AppBar(
           toolbarHeight: 60,
           elevation: 3,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(40),
               )
@@ -74,7 +76,6 @@ class _add_routeState extends State<add_route> {
         ),
         body: SafeArea(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
               children: [
                 Form(
                 key: _formkey,
@@ -134,9 +135,23 @@ class _add_routeState extends State<add_route> {
                       //   ),
                       // ),
                       const SizedBox(height: 20,),
-                      _route_name(_routeName),
-                      const SizedBox(height: 20,),
                       _area_name(_areaName),
+
+                      const SizedBox(height: 20,),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: starting_loaction_Textfields(_starting_loaction_name)),
+                            SizedBox(width: 8.0,),
+                            Expanded(
+                                child: ending_location_Textfields(_ending_loaction_name)),
+                          ],
+                        ),
+                      ),
+                      // _route_name(_routeName),
+
                       const SizedBox(height: 20,),
                       Text(
                         "Select stops",
@@ -172,11 +187,6 @@ class _add_routeState extends State<add_route> {
                           ),
                         ),
                       ),
-
-
-
-
-
 
 
                       // Row(
@@ -234,87 +244,153 @@ class _add_routeState extends State<add_route> {
 
 
                       //add route button...
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: SizedBox(
-                            width: double.infinity,
-                            height: 50.0,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                // foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                  backgroundColor: MaterialStateProperty.all<Color>(
-                                      kSecondaryColor),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.0),
-                                        // side: BorderSide(color: Colors.red)
-                                      ))),
-                              onPressed: () async {
-                                if (_formkey.currentState!.validate()) {
-                                  _formkey.currentState!.save();
-                                }
-                              },
-                              child: Text("Add Route".toUpperCase(),
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.grey.shade50)),
-                            )),
-                      ),
 
                     ],
                   ),
                 ),
               ),
+
                 Expanded(
-                  child: ListView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: _formfields.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                            child: TextField(
-                              controller: _formfields[index],
+                  child: Form(
+                    key: _formkey2,
+                    child: ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _formfields.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(vertical: 7,horizontal: 15),
+                              child: TextFormField(
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: kSecondaryColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  suffixIcon: Icon(Icons.add_location_alt_outlined,color: kSecondaryColor,),
+                                  prefixIcon: CircleAvatar(
+                                    radius: 10,
+                                    backgroundColor: Colors.transparent,
+                                    child: Text((index+1).toString()+".",style: TextStyle(color: kSecondaryColor,fontWeight: FontWeight.bold),),
+                                  ),
+                                  label: Text("Add Stop"),
+                                  labelStyle: TextStyle(
+                                      color: kSecondaryColor, fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                controller: _formfields[index],
 
-                            ));
-                      }),
+                              ));
+                        }),
+                  ),
                 ),
-                TextButton(onPressed: (){
-                  _formfields.forEach((element) {
-                  print(element.text);
-                });}, child: Text("abc"))
-              ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: SizedBox(
+                      width: size.width*0.8,
+                      height: 50.0,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          // foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                kSecondaryColor),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  // side: BorderSide(color: Colors.red)
+                                ))),
+                        onPressed: () async {
+                          if (_formkey.currentState!.validate() && _formkey2.currentState!.validate()) {
+                            _formkey.currentState!.save();
+                            _formkey2.currentState!.save();
+                            int i = 0;
+                            nodes = _formfields.map((e){
+                              i++;
+                              return {'Name': e.text, 'Precedence': i};
+                            }).toList();
 
+
+                            final url = Uri.parse(
+                                "https://policelookout.000webhostapp.com/API/New_Admin_Add_Route_ME.php");
+                            final response = await http.post(url, body: {
+                              'Area_Name': _areaName.text,
+                              'Start_Stop_Name': _starting_loaction_name.text,
+                              'Destination_Stop_Name': _ending_loaction_name.text,
+                              'Nodes': jsonEncode(nodes)
+                            });
+                            print("called");
+                            print(response.body);
+
+                            if (response.statusCode == 200) {
+                              // run lottie here .
+                              if (jsonDecode(response.body)['error'] == false) {
+                                // jsonResponse['message'];
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.black,
+                                    // content: Text(jsonDecode(fetch1)["message"]),
+                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                  ),
+                                );
+                              }
+                              else
+                              {
+                                // jsonResponse['message'];
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.black,
+                                    // content: Text(jsonDecode(fetch1)["message"]),
+                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                  ),
+                                );
+                              }
+
+                            }
+                          }
+                        },
+                        child: Text("Add Route".toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 18, color: Colors.grey.shade50)),
+                      )),
+                ),
+                // TextButton(onPressed: (){
+                //   _formfields.forEach((element) {
+                //   print(element.text);
+                // });}, child: Text("Submit")),
+              ],
             )));
   }
 }
 
-Widget _route_name(TextEditingController _routeName) => TextFormField(
-      controller: _routeName,
-      showCursor: true,
-      decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: kSecondaryColor,
-          ),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        prefixIcon: Icon(
-          Icons.route_sharp,
-          color: kSecondaryColor,
-          size: 22,
-        ),
-        label: Text("Route Name"),
-        labelStyle: TextStyle(
-            color: kSecondaryColor, fontWeight: FontWeight.bold, fontSize: 18),
-      ),
-      textInputAction: TextInputAction.next,
-      validator: (val) {
-        if (val!.isEmpty) {
-          return " *Required";
-        }
-        return null;
-      },
-    );
+// Widget _route_name(TextEditingController _routeName) => TextFormField(
+//       controller: _routeName,
+//       showCursor: true,
+//       decoration: InputDecoration(
+//         focusedBorder: OutlineInputBorder(
+//           borderSide: BorderSide(
+//             color: kSecondaryColor,
+//           ),
+//           borderRadius: BorderRadius.circular(20.0),
+//         ),
+//         prefixIcon: Icon(
+//           Icons.route_sharp,
+//           color: kSecondaryColor,
+//           size: 22,
+//         ),
+//         label: Text("Route Name"),
+//         labelStyle: TextStyle(
+//             color: kSecondaryColor, fontWeight: FontWeight.bold, fontSize: 18),
+//       ),
+//       textInputAction: TextInputAction.next,
+//       validator: (val) {
+//         if (val!.isEmpty) {
+//           return " *Required";
+//         }
+//         return null;
+//       },
+//     );
 
 Widget _area_name(TextEditingController _areaName) => TextFormField(
       controller: _areaName,
@@ -344,6 +420,61 @@ Widget _area_name(TextEditingController _areaName) => TextFormField(
       },
     );
 
+
+Widget starting_loaction_Textfields( TextEditingController _starting_loaction_name) => TextFormField(
+  controller: _starting_loaction_name,
+  decoration: InputDecoration(
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: kSecondaryColor,),
+      borderRadius: BorderRadius.circular(20.0),
+    ),
+
+    // enabledBorder: OutlineInputBorder(
+    //     borderSide: BorderSide(color: kSecondaryColor)),
+    prefixIcon: Icon(
+      Icons.location_on,
+      color: kSecondaryColor,
+      size: 22,
+    ),
+    label: Text("Starting Location"),
+    labelStyle: TextStyle(color: kSecondaryColor,fontWeight: FontWeight.bold),
+  ),
+  textInputAction: TextInputAction.next,
+  validator: (value) {
+    if (value!.isEmpty || !RegExp(r'^[A-z a-z]+$').hasMatch(value)) {
+      return "Enter correct name";
+    }
+    else {
+      return null;
+    }
+  },
+);
+Widget ending_location_Textfields(TextEditingController _ending_loaction_name) => TextFormField(
+  controller: _ending_loaction_name,
+  decoration: InputDecoration(
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: kSecondaryColor),
+      borderRadius: BorderRadius.circular(20.0),
+    ),
+    // enabledBorder: OutlineInputBorder(
+    //     borderSide: BorderSide(color: kSecondaryColor)),
+    prefixIcon: Icon(
+      Icons.location_off,
+      color: kSecondaryColor,
+      size: 22,
+    ),
+    label: Text("Destination Location"),
+    labelStyle: TextStyle(color: kSecondaryColor,fontWeight: FontWeight.bold),
+  ),
+  textInputAction: TextInputAction.next,
+  validator: (value) {
+    if (value!.isEmpty || !RegExp(r'^[A-z a-z]+$').hasMatch(value)) {
+      return "Enter correct name";
+    } else {
+      return null;
+    }
+  },
+);
 
 
 //

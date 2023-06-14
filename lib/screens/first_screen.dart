@@ -127,14 +127,14 @@ class _first_screenState extends State<first_screen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
+                            boxShadow:  [
+                              BoxShadow(color: Colors.black26,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
                             ]
                           ),
                           child: InkWell(
                             onTap: (){
 
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> map_admin(),));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const map_admin(),));
                               // getLiveLocation();
                               // launchURL();
                             },
@@ -163,12 +163,12 @@ class _first_screenState extends State<first_screen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: const [
-                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
+                                BoxShadow(color: Colors.black26,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
                               ]
                             ),
                             child: InkWell(
                               onTap: (){
-                                Navigator.push(context, PageTransition(child: history(), type: PageTransitionType.leftToRight));
+                                Navigator.push(context, PageTransition(child: const history(), type: PageTransitionType.leftToRight));
                               },
                               child: Stack(
                                 children: [
@@ -191,17 +191,17 @@ class _first_screenState extends State<first_screen> {
                         ),
                         InkWell(
                           child: Container(
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: const [
-                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
+                                BoxShadow(color: Colors.black26,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2),
                               ]
                             ),
                             child: InkWell(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> new_schedule_assign_basepage(),));
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const new_schedule_assign_basepage(),));
                               },
                               child: Stack(
                                 children: [
@@ -229,7 +229,7 @@ class _first_screenState extends State<first_screen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
-                                BoxShadow(color: Colors.grey,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2)
+                                BoxShadow(color: Colors.black26,offset: Offset( 3,4.0),blurRadius:5,spreadRadius: 2)
                               ]
                             ),
                             child: InkWell(

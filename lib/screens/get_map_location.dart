@@ -14,9 +14,7 @@ Future<Position?> getLiveLocation() async {
     //print("Live Location :- ${position.latitude}, ${position.longitude}");
 
 
-    _url =
-        "https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}"
-            .toString();
+
 
    // print(
       //  "Map Url :- https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}");
@@ -25,14 +23,25 @@ Future<Position?> getLiveLocation() async {
   }
 }
 
-void launchURL() async {
+void launchURL(Uri _url) async {
   // const url = "https://www.google.com/maps/search/?api=1&query=23.0187396,72.5240466";
-  final uri = Uri.parse(_url!);
 
-
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri);
+  if (await canLaunchUrl(_url)) {
+    await launchUrl(_url);
   } else {
     throw 'Could not launch $_url';
   }
+}
+
+openmap(String latitude , String longitude)
+{
+  try{
+    Uri _url = Uri.parse("https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}");
+    launchUrl(_url);
+  }
+  catch($error)
+  {
+
+  }
+
 }

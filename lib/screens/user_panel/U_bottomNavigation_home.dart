@@ -18,10 +18,14 @@ class u_bottomNavigation_homeState extends State<u_bottomNavigation_home> {
   ];
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: screens[_index],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: kSecondaryColor,
+        selectedItemColor: Colors.white,
+        selectedFontSize: 18,
+        backgroundColor: kSecondaryColor,
+        unselectedItemColor: Colors.cyan,
         currentIndex: _index,
         onTap: (value) {
           setState(() {

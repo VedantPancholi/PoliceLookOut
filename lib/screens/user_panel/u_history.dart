@@ -16,6 +16,7 @@ class u_history extends StatefulWidget {
 class _u_historyState extends State<u_history> {
 
   bool isLoading = false;
+  bool isLoadingBottom = false;
   String? msg1;
   var msg2;
   String? msg3;
@@ -80,8 +81,19 @@ class _u_historyState extends State<u_history> {
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(2023),
-                          lastDate: DateTime(2030));
-
+                          lastDate: DateTime(2030),
+                        builder: (BuildContext context, Widget? child){
+                          return Theme( data: ThemeData.light().copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: kSecondaryColor,
+                              onPrimary: Colors.white,
+                              surface:Color(0xFFF93822),
+                              onSurface: Colors.black,
+                            ),
+                            dialogBackgroundColor:Colors.white,
+                          ), child: child!);
+                        },
+                      );
                       if (pickeddate != null) {
                         setState(() {
                           _date.text =
@@ -151,8 +163,7 @@ class _u_historyState extends State<u_history> {
                             ? Text("No duties Found ")
                             : Card(
                               shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(20.0)),
+                                  borderRadius: BorderRadius.circular(20.0)),
                               elevation: 4,
                               child: Column(
                                 children: [
@@ -169,83 +180,92 @@ class _u_historyState extends State<u_history> {
                                       Icons.keyboard_arrow_down_outlined,
                                       color: kSecondaryColor,
                                     ),
-                                    title: Text("Schedule Duty : "+(index+1).toString()),
-                                    subtitle: Text(
-                                        "Schedule Time :${msg2['history'][index]['Reading_Time']}"),
+                                    title: Text("Date : ${DateFormat("yyyy-mm-dd").format(DateTime.parse(msg2['history'][index]['Reading_Time']))}"),
+
+                                    subtitle: Text("Schedule Duty : "+(index+1).toString()),
                                     onTap: () async {
+                                      if(!isLoadingBottom){
+                                        setState(() {
+                                          isLoadingBottom = true;
+                                        });
+                                        final url1 = Uri.parse(
+                                            "https://policelookout.000webhostapp.com/API/Route_Stopfetching_me.php");
+                                        final response1 = await http.post(url1, body: {
+                                          'Route_Id': msg2['history'][index]['Route_Id'],
+                                        });
 
-                                      final url1 = Uri.parse(
-                                          "https://policelookout.000webhostapp.com/API/Route_Stopfetching_me.php");
-                                      final response1 =
-                                      await http.post(url1, body: {
-                                        'Route_Id': msg2['history'][index]
-                                        ['Route_Id'],
-                                      });
+                                        setState(() {
+                                          msg3 = response1.body;
+                                          msg4 = jsonDecode(response1.body);
+                                        });
 
-                                      setState(() {
-                                        msg3 = response1.body;
-                                        msg4 = jsonDecode(response1.body);
-                                      });
+                                        print(msg4);
+                                        print(msg4['Route_info']['Start_Stop_Name']);
 
-                                      print(msg4);
-                                      print(msg4['Route_info']['Start_Stop_Name']);
+                                        print(msg4['Stop_Nodes'][0]['Stop_Name']);
 
-                                      print(msg4['Stop_Nodes'][0]['Stop_Name']);
-
-                                      print("-------------");
-                                      if(msg4['error'] == false)
-                                      {
-                                        showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                height: size.height / 2.5,
-                                                color: Colors.cyan.shade50.withOpacity(0.2),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                                      child: Text(
+                                        print("-------------");
+                                        if(msg4['error'] == false)
+                                        {
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (context) {
+                                                return Container(
+                                                  height: size.height / 2.5,
+                                                  color: Colors.cyan.shade50.withOpacity(0.2),
+                                                  child:Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                                        child: Text(
                                                           "Starting Location : ${msg4['Route_info']['Start_Stop_Name']}",style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20,
-                                                        color: kSecondaryColor,
-                                                      ),),
-                                                    ),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                          itemCount : msg4['Stop_Nodes'].length,
-                                                          itemBuilder: (context,index){
-                                                            return ListTile(
-                                                              title: Text("Stop index : ${msg4['Stop_Nodes'][index]['Stop_Name']}"),
-                                                            );
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 20,
+                                                          color: kSecondaryColor,
+                                                        ),),
+                                                      ),
+                                                      Expanded(
+                                                        child: ListView.builder(
+                                                            itemCount : msg4['Stop_Nodes'].length,
+                                                            itemBuilder: (context,index){
+                                                              return ListTile(
+                                                                leading: CircleAvatar(
+                                                                  backgroundColor: kSecondaryColor,
+                                                                  child: Text((index+1).toString(),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                                                                  ),
+                                                                ),
+                                                                title: Text("Stop location : ${msg4['Stop_Nodes'][index]['Stop_Name']}"),
+                                                              );
 
                                                               // Text("Stop index :${msg4['Stop_Nodes'][index]['Stop_Name']}");
-                                                          }),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                                      child: Text(
-                                                          "Destination Location : ${msg4['Route_info']['Destiantion_Stop_Name']}",style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20,
-                                                        color: kSecondaryColor,
-                                                      ),),
-                                                    ),
-                                                    // ListTile(
-                                                    //   leading: new Icon(Icons.photo),
-                                                    //   title: new Text('Photo'),
-                                                    //   onTap: () {
-                                                    //     Navigator.pop(context);
-                                                    //   },
-                                                    // ),
+                                                            }),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                                        child: Text(
+                                                          "Destination Location : ${msg4['Route_info']['Destination_Stop_Name']}",style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 20,
+                                                          color: kSecondaryColor,
+                                                        ),),
+                                                      ),
+                                                      // ListTile(
+                                                      //   leading: new Icon(Icons.photo),
+                                                      //   title: new Text('Photo'),
+                                                      //   onTap: () {
+                                                      //     Navigator.pop(context);
+                                                      //   },
+                                                      // ),
 
-                                                  ],
-                                                ),
-                                              );
-                                            });
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                         await Future.delayed(const Duration(seconds: 3)).then((value) => isLoadingBottom = false);
+                                        }
                                       }
+
                                     },
                                   ),
                                 ],

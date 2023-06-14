@@ -2,16 +2,16 @@ import 'dart:io';
 import 'dart:math';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:pro/others/user_data.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pro/screens/first_screen.dart';
 import 'package:pro/screens/profileScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:pro/screens/user_panel/U_bottomNavigation_home.dart';
 import 'package:pro/widgets/onBoarding_screen.dart';
 import 'package:pro/widgets/pelatte.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../others/About_us.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,29 +30,6 @@ class _HomePageState extends State<HomePage> {
   String? formatter;
   late bool _isLoading;
   var all_data;
-  // final items = <Widget>[
-  //   Icon(
-  //     Icons.home,
-  //     size: 30,
-  //   ),
-  //   Icon(
-  //     Icons.search,
-  //     size: 30,
-  //   ),
-  //   Icon(
-  //     Icons.favorite,
-  //     size: 30,
-  //   ),
-  //   Icon(
-  //     Icons.notifications,
-  //     size: 30,
-  //   ),
-  //   Icon(
-  //     Icons.location_pin,
-  //     size: 30,
-  //   ),
-  // ];
-  // int index = 0;
 
   @override
   void initState() {
@@ -66,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     getData();
     newFieldName();
   }
+
 
   String userName = "";
 
@@ -89,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
-
+  Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () => _onBackButtonPressed(context),
       child: Scaffold(
@@ -99,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                       colors: [
-                        Colors.cyan.shade800,
+                        Colors.cyan.shade900,
                         Colors.cyan.shade800.withOpacity(0.7),
                       ],
                       begin: Alignment.topCenter,
@@ -116,18 +94,24 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              // CircleAvatar(
+                              //   radius: 50.0,
+                              //   backgroundImage: AssetImage("assets/images/v_logo.jpg"),
+                              // ),
                               CircleAvatar(
-                                radius: 50.0,
-                                backgroundImage: AssetImage("assets/images/v_logo.jpg"),
+                                maxRadius: 50,
+                                backgroundColor: Colors.transparent,
+                                child: Lottie.asset('assets/images/profile_icon_lottie.json',
+                                    // height: size.height*0.4,
+                                    // width: size.width*0.4,
+                                ),
                               ),
                               SizedBox(
                                 height: 20,
                               ),
                               Text(
-                                userName != null
-                                    ? userName
-                                    : "null",
-                                style: TextStyle(
+                                userName ?? "null",
+                                style: const TextStyle(
                                     color: Colors.white, fontSize: 18),
                               ),
                             ],
@@ -153,13 +137,18 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return About_us_page();
+                                    }));
+                              },
                               leading: const Icon(
-                                Icons.settings,
+                                Icons.info_rounded,
                                 color: Colors.white,
                               ),
                               title: const Text(
-                                "Settings",
+                                "About Us",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -209,7 +198,6 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor: Colors.white,
 
                             body: first_screen(),
-
                           ),
                         ));
                       }),

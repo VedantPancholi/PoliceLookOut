@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import '../../widgets/floating_speedDial.dart';
 import '../../widgets/pelatte.dart';
+bool isLoading = false;
 
 void main() {
   runApp(MaterialApp(
@@ -36,7 +37,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
   String? showareatext = "Select Area";
   var msg2;
   List<dynamic> areaList = [];
-
+  var jsonResponse;
   String? _selectedroute;
   String? showroutetext = "Select Route";
   var msg3;
@@ -56,12 +57,17 @@ class _schedule_dutiesState extends State<schedule_duties> {
   }
 
   Future<List<dynamic>> getusers() async {
+
+    setState(() {
+      isLoading = true;
+    });
     final url = Uri.parse(
         "https://policelookout.000webhostapp.com/API/Admin_Show_User_me.php");
     final response = await http.post(url);
     if (!mounted) {}
 
     setState(() {
+      isLoading = false;
       msg1 = jsonDecode(response.body)["Users"];
       print(userList);
       print(msg1);
@@ -70,12 +76,16 @@ class _schedule_dutiesState extends State<schedule_duties> {
   }
 
   Future<List<dynamic>> getarea() async {
+    setState(() {
+      isLoading = true;
+    });
     final url = Uri.parse(
         "https://policelookout.000webhostapp.com/API/Admin_Area_names_ME.php");
     final response = await http.post(url);
     if (!mounted) {}
 
     setState(() {
+      isLoading = false;
       msg2 = jsonDecode(response.body)["Areas"];
       print(areaList);
       print(msg2);
@@ -104,7 +114,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
 
       ),
       // floatingActionButton: floating_speedDial(),
-      body: SafeArea(
+      body: isLoading ? Center(child: CircularProgressIndicator(color:kSecondaryColor)) : SafeArea(
         child: Form(
           child: Padding(
             padding:
@@ -167,6 +177,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
                   const SizedBox(
                     height: 50,
                   ),
+
                   //area dropdown
                   DropdownButtonFormField(
                     key: UniqueKey(),
@@ -205,6 +216,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
                           ],
                     onChanged: (val) {
                       setState(() {
+
                         _selectedarea = val as String;
                       });
 
@@ -233,6 +245,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
                   const SizedBox(
                     height: 50,
                   ),
+
                   // route dropdown
                   DropdownButtonFormField(
                       key: UniqueKey(),
@@ -243,13 +256,13 @@ class _schedule_dutiesState extends State<schedule_duties> {
                                 key: UniqueKey(),
                                 child: Text(each['Start_Stop_Name'] +
                                     "  -  " +
-                                    each['Destiantion_Stop_Name']),
+                                    each['Destination_Stop_Name']),
                                 value: each['Route_Id'],
                                 onTap: () {
                                   setState(() {
                                     showroutetext = each['Start_Stop_Name'] +
                                         "  -  " +
-                                        each['Destiantion_Stop_Name'];
+                                        each['Destination_Stop_Name'];
                                   });
                                 },
                               );
@@ -311,7 +324,19 @@ class _schedule_dutiesState extends State<schedule_duties> {
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2023),
-                            lastDate: DateTime(2030));
+                            lastDate: DateTime(2030),
+                          builder: (BuildContext context, Widget? child){
+                            return Theme( data: ThemeData.light().copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: kSecondaryColor,
+                                onPrimary: Colors.white,
+                                surface:Color(0xFFF93822),
+                                onSurface: Colors.black,
+                              ),
+                              dialogBackgroundColor:Colors.white,
+                            ), child: child!);
+                          },
+                        );
 
                         if (pickeddate != null) {
                           setState(() {
@@ -361,15 +386,27 @@ class _schedule_dutiesState extends State<schedule_duties> {
 
                             if (response.statusCode == 200) {
                               // run lottie here .
-
-                              // AnimatedSplashScreen(
-                              //   splash: Lottie.asset('assets/images/location_1.json'),
-                              //   backgroundColor:splashColor,
-                              //   splashIconSize: 450,
-                              //   // splashTransition: SplashTransition.fadeTransition,
-                              //   animationDuration: const Duration(microseconds: 2500),
-                              //   nextScreen: const schedule_duties(),
-                              // );
+                              if (jsonDecode(response.body)['error'] == false) {
+                                // jsonResponse['message'];
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.black,
+                                    // content: Text(jsonDecode(fetch1)["message"]),
+                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                  ),
+                                );
+                              }
+                              else
+                              {
+                                // jsonResponse['message'];
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.black,
+                                    // content: Text(jsonDecode(fetch1)["message"]),
+                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                  ),
+                                );
+                              }
 
                             }
                             else

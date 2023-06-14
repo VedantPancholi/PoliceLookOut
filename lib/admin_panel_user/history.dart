@@ -90,7 +90,20 @@ class _historyState extends State<history> {
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2023),
-                              lastDate: DateTime(2030));
+                              lastDate: DateTime(2030),
+                            builder: (BuildContext context, Widget? child){
+                              return Theme( data: ThemeData.light().copyWith(
+                                colorScheme: ColorScheme.light(
+                                  primary: kSecondaryColor,
+                                  onPrimary: Colors.white,
+                                  surface:Color(0xFFF93822),
+                                  onSurface: Colors.black,
+                                ),
+                                dialogBackgroundColor:Colors.white,
+                              ), child: child!);
+                            },
+                          );
+
 
                           if (pickeddate != null) {
                             setState(() {
@@ -176,9 +189,9 @@ class _historyState extends State<history> {
                                       Icons.keyboard_arrow_down_outlined,
                                       color: kSecondaryColor,
                                     ),
-                                    title: Text("Schedule Duty : "+(index+1).toString()),
-                                    subtitle: Text(
-                                        "Schedule Time :${msg2['history'][index]['Reading_Time']}"),
+                                    title: Text(
+                                        "Date : ${DateFormat("yyyy-mm-dd").format(DateTime.parse(msg2['history'][index]['Reading_Time']))}"),
+                                    subtitle: Text("Schedule Duty : "+(index+1).toString()),
                                     onTap: () async {
 
                                       final url1 = Uri.parse(
@@ -225,16 +238,20 @@ class _historyState extends State<history> {
                                                           itemCount : msg4['Stop_Nodes'].length,
                                                           itemBuilder: (context,index){
                                                             return ListTile(
-                                                              title: Text("Stop index : ${msg4['Stop_Nodes'][index]['Stop_Name']}"),
+                                                              leading: CircleAvatar(
+                                                                backgroundColor: kSecondaryColor,
+                                                                child: Text((index+1).toString(),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                                                                ),
+                                                              ),
+                                                              title: Text("Stop location : ${msg4['Stop_Nodes'][index]['Stop_Name']}"),
                                                             );
-
                                                             // Text("Stop index :${msg4['Stop_Nodes'][index]['Stop_Name']}");
                                                           }),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                                                       child: Text(
-                                                        "Destination Location : ${msg4['Route_info']['Destiantion_Stop_Name']}",style: TextStyle(
+                                                        "Destination Location : ${msg4['Route_info']['Destination_Stop_Name']}",style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 20,
                                                         color: kSecondaryColor,

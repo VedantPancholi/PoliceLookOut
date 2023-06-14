@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pro/screens/get_map_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../others/About_us.dart';
 import '../../widgets/onBoarding_screen.dart';
 import '../profileScreen.dart';
 import 'U_bottomNavigation_home.dart';
@@ -30,7 +32,6 @@ class _U_homepageState extends State<U_homepage> {
         _isLoading = false;
       });
     });
-
     super.initState();
     newFieldName();
   }
@@ -46,6 +47,7 @@ class _U_homepageState extends State<U_homepage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () => _onBackButtonPressed(context),
       child: Scaffold(
@@ -55,11 +57,11 @@ class _U_homepageState extends State<U_homepage> {
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.cyan.shade800,
-                      Colors.cyan.shade800,
+                      Colors.cyan.shade900,
+                      Colors.cyan.shade800.withOpacity(0.7),
                     ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   )),
             ),
             SafeArea(
@@ -73,8 +75,12 @@ class _U_homepageState extends State<U_homepage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
-                              radius: 50.0,
-                              backgroundImage: AssetImage("assets/images/v_logo.jpg"),
+                              maxRadius: 50,
+                              backgroundColor: Colors.transparent,
+                              child: Lottie.asset('assets/images/profile_icon_lottie.json',
+                                  height: size.height*0.4,
+                                  width: size.width*0.4
+                              ),
                             ),
                             SizedBox(
                               height: 20,
@@ -110,13 +116,18 @@ class _U_homepageState extends State<U_homepage> {
                               ),
 
                               ListTile(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return About_us_page();
+                                      }));
+                                },
                                 leading: const Icon(
-                                  Icons.feedback_outlined,
+                                  Icons.info_rounded,
                                   color: Colors.white,
                                 ),
                                 title: const Text(
-                                  "Feedback",
+                                  "About Us",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -182,7 +193,7 @@ class _U_homepageState extends State<U_homepage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.cyan.shade50,
+
           content: const Text("Do you want to close the app?"),
           actions: [
             TextButton(

@@ -14,6 +14,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = "";
+  String dob = "";
   String userContact = "";
   String userEmail = "";
   String userCardValue = "";
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userName = sharedPreferences.getString('name')!;
       userEmail = sharedPreferences.getString('email')!;
       userContact = sharedPreferences.getString('contactUs')!;
+      dob = sharedPreferences.getString('dob')!;
     });
   }
 
@@ -51,15 +53,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/v_logo.jpg'),
-                    radius: 40.0,
-                  ),
-                ),
-                Lottie.asset('assets/images/location_1.json',
-                  height: 100,
-                  width: 100
+                // Center(
+                //   child: CircleAvatar(
+                //     backgroundImage: AssetImage('assets/images/v_logo.jpg'),
+                //     radius: 40.0,
+                //   ),
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset('assets/images/profile_icon_lottie.json',
+                      height: 175,
+                      width: 175,
+                    ),
+                  ],
                 ),
                 Divider(
                   height: 90.0,
@@ -88,25 +95,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 SizedBox(height: 30.0),
-                Text(
-                  'Current total users',
-                  style: TextStyle(
-                    color: Colors.grey[200],
-                    letterSpacing: 2.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  '7',
-                  style: TextStyle(
-                    color: Colors.amberAccent,
-                    letterSpacing: 2.0,
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 30.0),
+                // Text(
+                //   'Current total users',
+                //   style: TextStyle(
+                //     color: Colors.grey[200],
+                //     letterSpacing: 2.0,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                // SizedBox(height: 8.0),
+                // Text(
+                //   '7',
+                //   style: TextStyle(
+                //     color: Colors.amberAccent,
+                //     letterSpacing: 2.0,
+                //     fontSize: 22.0,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                // SizedBox(height: 30.0),
                 Text(
                   'DOB',
                   style: TextStyle(
@@ -117,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  personal_info1.dOB ?? "",
+                  dob,
                   style: const TextStyle(
                     color: Colors.amberAccent,
                     letterSpacing: 2.0,

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -69,20 +68,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (prefs.getString('id') != null) {
       if (prefs.getString('Role') != null && prefs.getString('Role') == "1") {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()), (
+            MaterialPageRoute(builder: (BuildContext context) => const HomePage()), (
             Route<dynamic> route) => false);
       } else {
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (BuildContext context) => U_homepage()), (
+            builder: (BuildContext context) => const U_homepage()), (
             Route<dynamic> route) => false);
       }
     } else {
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-          builder: (BuildContext context) => OnboardingScreen()), (
+          builder: (BuildContext context) => const OnboardingScreen()), (
           Route<dynamic> route) => false);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

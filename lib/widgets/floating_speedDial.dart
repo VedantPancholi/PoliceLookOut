@@ -36,11 +36,12 @@ class floating_speedDial extends StatelessWidget {
           SpeedDialChild(
             child: const Icon(Icons.location_on_outlined),
             label: 'Map',
-            onTap: () {
-              const map_admin();
-              // getLiveLocation();
-              // launchURL();
-            },
+            onTap:() => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return  map_admin();
+              }),
+            ),
           ),
           SpeedDialChild(
             child: const Icon(Icons.history),

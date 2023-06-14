@@ -54,6 +54,7 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   shared_preferences: ^2.1.0
   numberpicker: ^2.1.2
+  scroll_snap_list: ^0.9.1
 
 
 

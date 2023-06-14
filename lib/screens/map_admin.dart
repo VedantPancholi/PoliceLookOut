@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:http/http.dart' as http;
+import 'package:pro/screens/get_map_location.dart';
+import 'package:pro/screens/view_schedule_duties.dart';
 import '../widgets/floating_speedDial.dart';
 import '../widgets/pelatte.dart';
 
@@ -27,7 +29,7 @@ class _map_adminState extends State<map_admin> {
 
   Future<void> _handleRefresh() async {
     getrecords();
-    return await Future.delayed(const Duration(milliseconds: 500));
+    return await Future.delayed(const Duration(milliseconds: 400));
   }
 
   Future<void> deleterecords(email) async {
@@ -54,6 +56,10 @@ class _map_adminState extends State<map_admin> {
   }
 
   Future<void> getrecords() async {
+
+    setState(() {
+      isLoading = true;
+    });
     final url = Uri.parse(
         "https://policelookout.000webhostapp.com/API/Admin_Show_User_me.php");
     final response = await http.post(url);
@@ -61,7 +67,7 @@ class _map_adminState extends State<map_admin> {
       return;
     }
     setState(() {
-
+      isLoading = false;
       users = jsonDecode(response.body)["Users"];
       // print(users);
       founduser = users;
@@ -93,7 +99,7 @@ class _map_adminState extends State<map_admin> {
         springAnimationDurationInMilliseconds: 500,
         child: Column(
           children: [
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
 
             //search button
             Padding(
@@ -128,8 +134,10 @@ class _map_adminState extends State<map_admin> {
             ),
             SizedBox(height: 20,),
 
+
+            //list of users
             Expanded(
-              child: ListView.builder(
+              child: isLoading ? Center(child: CircularProgressIndicator(color:kSecondaryColor)) : ListView.builder(
                   itemCount: founduser == null ? 0 : founduser.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
@@ -141,13 +149,20 @@ class _map_adminState extends State<map_admin> {
                         ),
                         elevation: 2,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: ListTile(
                             trailing: IconButton(
-                              onPressed: () {
+                              onPressed: () async{
+                                final url = Uri.parse("https://policelookout.000webhostapp.com/API/Admin_Location_ME.php");
+                                final response = await http.post(url,body:{
+                                  'Login_Id':founduser[index]['Login_Id'],
+                                });
+                                var msg = jsonDecode(response.body)["data"];
+                                openmap(msg['Latitude'],msg['Longitude']);
+
                                 // load... index wise get_map_location
                               },
-                              icon: Icon(Icons.location_history,color: kSecondaryColor,size: 30,),
+                              icon: Icon(Icons.share_location_outlined,color: kSecondaryColor,size: 30,),
                             ),
                             leading: CircleAvatar(
                               backgroundColor: kSecondaryColor,
@@ -158,10 +173,18 @@ class _map_adminState extends State<map_admin> {
                               "${founduser[index]["F_Name"]} ${founduser[index]["L_Name"]}",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            onTap: () {
-                              // print(index);
-                              print(founduser[index]['Login_Id']);
-                            },
+                           onTap: ()async{
+                            //  final url = Uri.parse("https://policelookout.000webhostapp.com/API/Admin_Location_ME.php");
+                            //  final response = await http.post(url,body:{
+                            //    'Login_Id':founduser[index]['Login_Id'],
+                            //  });
+                            // var msg = jsonDecode(response.body)["data"];
+                            // openmap(msg['Latitude'],msg['Longitude']);
+                            //
+                             Navigator.push(context, MaterialPageRoute(builder: (context)=> view_schedule_duties(login: founduser[index]['Login_Id'],Card_Value:  founduser[index]['Card_Value'],)));
+
+
+                           },
                           ),
                         ),
                       ),
