@@ -153,17 +153,6 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             ListTile(
-                              onTap: () {},
-                              leading: const Icon(
-                                Icons.feedback_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Feedback",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            ListTile(
                               onTap: () async{
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                 await prefs.clear();

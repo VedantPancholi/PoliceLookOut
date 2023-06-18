@@ -1,12 +1,10 @@
 import 'dart:convert';
-
+import 'dart:core';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:lottie/lottie.dart';
-import '../../widgets/floating_speedDial.dart';
 import '../../widgets/pelatte.dart';
 bool isLoading = false;
 
@@ -381,18 +379,17 @@ class _schedule_dutiesState extends State<schedule_duties> {
                               'Route_Id':_selectedroute,
                               'Reading_Time':_date.text,
                             });
-
                             print(response.body);
 
+
                             if (response.statusCode == 200) {
-                              // run lottie here .
                               if (jsonDecode(response.body)['error'] == false) {
                                 // jsonResponse['message'];
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     backgroundColor: Colors.black,
                                     // content: Text(jsonDecode(fetch1)["message"]),
-                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                    content: Text(jsonDecode(response.body)['message'],style: TextStyle(color: Colors.white),),
                                   ),
                                 );
                               }
@@ -403,7 +400,7 @@ class _schedule_dutiesState extends State<schedule_duties> {
                                   SnackBar(
                                     backgroundColor: Colors.black,
                                     // content: Text(jsonDecode(fetch1)["message"]),
-                                    content: Text(jsonResponse['message'],style: TextStyle(color: Colors.white),),
+                                    content: Text(jsonDecode(response.body)['message'],style: TextStyle(color: Colors.white),),
                                   ),
                                 );
                               }

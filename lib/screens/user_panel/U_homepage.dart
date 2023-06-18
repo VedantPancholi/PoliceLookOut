@@ -79,7 +79,7 @@ class _U_homepageState extends State<U_homepage> {
                               backgroundColor: Colors.transparent,
                               child: Lottie.asset('assets/images/profile_icon_lottie.json',
                                   height: size.height*0.4,
-                                  width: size.width*0.4
+                                  width: size.width*0.4,
                               ),
                             ),
                             SizedBox(

@@ -142,7 +142,10 @@ class _u_view_scheduled_dutiesState extends State<u_view_scheduled_duties> {
                      });
 
                      List<dynamic> nodecheck = jsonDecode(nodechecking_response.body)['Schedule Duties'];
-
+                    if (nodecheck[0]['Route_id'] == null)
+                    {
+                      nodecheck.clear();
+                    }
                       final url1 = Uri.parse(
                           "https://policelookout.000webhostapp.com/API/Route_Stopfetching_me.php");
                       final response1 =

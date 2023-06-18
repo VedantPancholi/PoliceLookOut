@@ -52,20 +52,13 @@ class _About_us_pageState extends State<About_us_page> {
                   ),
                   elevation: 3,
                   child: SizedBox(
-                    height: size.height*0.17,
+                    height: size.height*0.13,
                     width: size.width*0.9,
                     child:  Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("About Our Mission : \n",
-                            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                          Text("Our mission is to provide a reliable and efficient solution to help police organizations monitor and track the performance of their "
-                              "officers and employees, through the use of IoT-based smart surveillance technology.",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
+                      child: Text("Our mission is to provide a reliable and efficient solution to help police organizations monitor and track the performance of their "
+                          "officers and employees, through the use of IoT-based smart surveillance technology.",
+                        style: TextStyle(fontSize: 18),
                       ),
                     ),
                   ),
@@ -94,15 +87,22 @@ class _About_us_pageState extends State<About_us_page> {
                   ),
                   elevation: 3,
                   child: SizedBox(
-                    height: size.height*0.18,
+                    height: size.height*0.22,
                     width: size.width*0.9,
-                    child:  const Padding(
+                    child:   Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text("In today's time police organization has certain fields in which an officer or employee has to visit the place allocated respectively. "
-                          "Each of these officers is given adequate salary commensurate with their work. The circumstances are such that somewhere these salaried persons "
-                          "work properly or not. That is why we need to observe them. It is becoming complex to track and check the actual scenario of surveillance. "
-                          "IoT-based smart surveillance mechanism can be helpful in order to track these routes and duties.",
-                        style: TextStyle(fontSize: 15.5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("About Our Mission : \n",
+                            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                          Text("In today's time police organization has certain fields in which an officer or employee has to visit the place allocated respectively. "
+                              "Each of these officers is given adequate salary commensurate with their work. The circumstances are such that somewhere these salaried persons "
+                              "work properly or not. That is why we need to observe them. It is becoming complex to track and check the actual scenario of surveillance. "
+                              "IoT-based smart surveillance mechanism can be helpful in order to track these routes and duties.",
+                            style: TextStyle(fontSize: 15.5),
+                          ),
+                        ],
                       ),
                     ),
                   ),
