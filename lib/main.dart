@@ -88,8 +88,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 225, 239, 252),
       body: Center(
-        child: Lottie.asset('assets/images/location_1.json',
-        ),
+        child: Lottie.asset('assets/images/location_1.json',),
       ),
     );
   }
